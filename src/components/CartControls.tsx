@@ -41,7 +41,7 @@ export function CartControls({
    )}
    <div
     ref={cartIconRef}
-    className="flex justify-center gap-2 items-center p-3 bg-gray-100 rounded-full w-36"
+    className="flex justify-center gap-2 items-center p-3 bg-gray-100 rounded-full lg:w-fit w-36"
    >
     <svg
      xmlns="http://www.w3.org/2000/svg"
