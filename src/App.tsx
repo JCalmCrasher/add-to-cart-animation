@@ -1,117 +1,88 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
+import { type FoodItem } from "./types";
+import { Options } from "./components/Options";
+import { FoodImage } from "./components/FoodImage";
+import { CartControls } from "./components/CartControls";
+
+interface AnimationItem {
+ id: number;
+ action: "increment" | "decrement";
+}
+
+const ANIMATION_DURATION = 1000;
+const DEFAULT_FOOD_ITEM: FoodItem = {
+ id: 1,
+ name: "Ginger-Soy Salmon Fillet",
+ description: "edamame, cucumber, avocado, herbs, white rice",
+ price: 9.95,
+ image: "/ginger-soy.png"
+};
 
 function App() {
  const [quantity, setQuantity] = useState(0);
  const [isVegan, setIsVegan] = useState(false);
- const [isAnimating, setIsAnimating] = useState(false);
+ const [animations, setAnimations] = useState<AnimationItem[]>([]);
  const cartIconRef = useRef<HTMLDivElement>(null);
 
- const handleCart = (action: "increment" | "decrement") => {
-  setIsAnimating(true);
-  if (action === "increment") {
-   setQuantity((prev) => prev + 1);
-  } else if (action === "decrement") {
-   setQuantity((prev) => Math.max(0, prev - 1));
-  }
-  setTimeout(() => setIsAnimating(false), 1000); // Match animation duration
- };
+ const handleCart = useCallback((action: "increment" | "decrement") => {
+  const newAnimationId = Date.now();
+
+  setAnimations((prev) => [...prev, { id: newAnimationId, action }]);
+  setQuantity((prev) =>
+   action === "increment" ? prev + 1 : Math.max(0, prev - 1)
+  );
+
+  const timeoutId = setTimeout(() => {
+   setAnimations((prev) => prev.filter((item) => item.id !== newAnimationId));
+  }, ANIMATION_DURATION);
+
+  return () => clearTimeout(timeoutId);
+ }, []);
+
+ const handleVeganOption = useCallback((checked: boolean) => {
+  setIsVegan(checked);
+ }, []);
 
  return (
   <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
    <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-lg relative">
-    {/* Food Image */}
-    <div className="mb-6">
-     <img
-      src="/ginger-soy.png"
-      alt="Ginger-Soy Salmon Fillet"
-      className="w-full h-64 object-cover rounded-2xl"
-     />
+    <FoodImage src={DEFAULT_FOOD_ITEM.image} alt={DEFAULT_FOOD_ITEM.name} />
+
+    <div className="space-y-2 mb-6">
+     <h2 className="text-2xl font-semibold">{DEFAULT_FOOD_ITEM.name}</h2>
+     <p className="text-gray-500">{DEFAULT_FOOD_ITEM.description}</p>
+     <p className="text-xl font-semibold">
+      ${DEFAULT_FOOD_ITEM.price.toFixed(2)}
+     </p>
     </div>
 
-    {/* Title and Description */}
-    <h2 className="text-2xl font-semibold mb-2">Ginger-Soy Salmon Fillet</h2>
-    <p className="text-gray-500 mb-2">
-     edamame, cucumber, avocado, herbs, white rice
-    </p>
-    <p className="text-xl font-semibold mb-6">$9.95</p>
+    <Options isVegan={isVegan} onVeganChange={handleVeganOption} />
 
-    {/* Options */}
-    <div className="mb-6 bg-gray-100 p-3 rounded-md">
-     <div className="flex items-center justify-between">
-      <h3 className="text-lg">Options</h3>
-      <span className="text-gray-400 text-sm">Optional</span>
-     </div>
-     <div className="mt-2 flex items-center justify-between">
-      <span>Vegan</span>
-      <div className="relative">
-       <input
-        type="checkbox"
-        checked={isVegan}
-        onChange={(e) => setIsVegan(e.target.checked)}
-        className="w-6 h-6 rounded-md border-gray-300"
-       />
-      </div>
-     </div>
-    </div>
-
-    {/* Floating Cart Animation */}
-    {isAnimating && (
-     <div className="fixed shadow-md rounded-full flex items-center justify-center animate-add-to-cart">
+    {/* Animation Elements */}
+    {animations.map(({ id, action }) => (
+     <div
+      key={id}
+      className={`fixed shadow-md rounded-full flex items-center 
+              justify-center ${
+               action === "decrement"
+                ? "animate-remove-from-cart"
+                : "animate-add-to-cart"
+              }`}
+     >
       <img
-       src="/ginger-soy.png"
-       alt="Ginger-Soy Salmon Fillet"
+       src={DEFAULT_FOOD_ITEM.image}
+       alt={DEFAULT_FOOD_ITEM.name}
        className="size-10 object-cover rounded-2xl"
       />
      </div>
-    )}
+    ))}
 
-    {/* Quantity Controls */}
-    <div className="flex items-center justify-between">
-     {quantity === 0 ? (
-      <button
-       onClick={() => handleCart("increment")}
-       className="bg-slate-700 px-4 py-2 rounded-full text-white"
-      >
-       Add to Cart
-      </button>
-     ) : (
-      <div className="flex items-center gap-4 bg-gray-100 px-4 py-2 rounded-full">
-       <button
-        onClick={() => handleCart("decrement")}
-        className="text-xl font-medium text-gray-500"
-       >
-        −
-       </button>
-       <span className="w-8 text-center">{quantity}</span>
-       <button
-        onClick={() => handleCart("increment")}
-        className="text-xl font-medium text-gray-500"
-       >
-        +
-       </button>
-      </div>
-     )}
-     <div
-      ref={cartIconRef}
-      className="flex gap-2 items-center p-3 bg-gray-100 rounded-full"
-     >
-      <svg
-       xmlns="http://www.w3.org/2000/svg"
-       className="h-6 w-6 text-gray-400"
-       fill="none"
-       viewBox="0 0 24 24"
-       stroke="currentColor"
-      >
-       <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-       />
-      </svg>
-      <span className="font-bold">{quantity}</span>
-     </div>
-    </div>
+    <CartControls
+     quantity={quantity}
+     onIncrement={() => handleCart("increment")}
+     onDecrement={() => handleCart("decrement")}
+     cartIconRef={cartIconRef}
+    />
    </div>
   </div>
  );
