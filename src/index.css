@@ -19,31 +19,31 @@
   opacity: 1;
  }
  15% {
-  transform: scale(0.95) translate(90px, -160px);
+  transform: scale(0.95) translate(clamp(45px, 8vw, 90px), clamp(-120px, -15vw, -160px));
   opacity: 1;
  }
  30% {
-  transform: scale(0.9) translate(180px, -200px);
+  transform: scale(0.9) translate(clamp(90px, 16vw, 180px), clamp(-150px, -18vw, -200px));
   opacity: 1;
  }
  45% {
-  transform: scale(0.85) translate(270px, -200px);
+  transform: scale(0.85) translate(clamp(135px, 24vw, 270px), clamp(-150px, -18vw, -200px));
   opacity: 1;
  }
  60% {
-  transform: scale(0.8) translate(360px, -180px);
+  transform: scale(0.8) translate(clamp(180px, 32vw, 360px), clamp(-140px, -16vw, -180px));
   opacity: 1;
  }
  75% {
-  transform: scale(0.7) translate(480px, -120px);
+  transform: scale(0.7) translate(clamp(240px, 40vw, 480px), clamp(-100px, -12vw, -120px));
   opacity: 1;
  }
  95% {
-  transform: scale(0.6) translate(600px, 0);
+  transform: scale(0.6) translate(clamp(300px, 48vw, 600px), 0);
   opacity: 1;
  }
  100% {
-  transform: scale(0.6) translate(600px, 0);
+  transform: scale(0.6) translate(clamp(300px, 48vw, 600px), 0);
   opacity: 0;
  }
 }
@@ -60,27 +60,27 @@
 
 @keyframes removeFromCart {
  0% {
-  transform: scale(0.6) translate(600px, 0);
+  transform: scale(0.6) translate(clamp(300px, 48vw, 600px), 0);
   opacity: 1;
  }
  15% {
-  transform: scale(0.7) translate(480px, -120px);
+  transform: scale(0.7) translate(clamp(240px, 40vw, 480px), clamp(-100px, -12vw, -120px));
   opacity: 1;
  }
  30% {
-  transform: scale(0.8) translate(360px, -180px);
+  transform: scale(0.8) translate(clamp(180px, 32vw, 360px), clamp(-140px, -16vw, -180px));
   opacity: 1;
  }
  45% {
-  transform: scale(0.85) translate(270px, -200px);
+  transform: scale(0.85) translate(clamp(135px, 24vw, 270px), clamp(-150px, -18vw, -200px));
   opacity: 1;
  }
  60% {
-  transform: scale(0.9) translate(180px, -200px);
+  transform: scale(0.9) translate(clamp(90px, 16vw, 180px), clamp(-150px, -18vw, -200px));
   opacity: 1;
  }
  75% {
-  transform: scale(0.95) translate(90px, -160px);
+  transform: scale(0.95) translate(clamp(45px, 8vw, 90px), clamp(-120px, -15vw, -160px));
   opacity: 1;
  }
  95% {
